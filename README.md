@@ -2,6 +2,40 @@
 
 ## Project Structure & Pipeline Breakdown
 
+```mermaid
+graph TD
+    A[Raw Data Collection] --> B[Data Preparation]
+    B --> C[Indicator Evaluation]
+    C --> D[Feature Selection]
+    D --> E[Model Training]
+    E --> F[Trading Simulation]
+    F --> G[Performance Evaluation]
+    
+    subgraph "Data Pipeline"
+        A
+        B
+    end
+    
+    subgraph "Model Pipeline"
+        C
+        D
+        E
+    end
+    
+    subgraph "Trading Pipeline"
+        F
+        G
+    end
+    
+    style A fill:#e1f5fe
+    style B fill:#e1f5fe
+    style C fill:#f3e5f5
+    style D fill:#f3e5f5
+    style E fill:#f3e5f5
+    style F fill:#e8f5e8
+    style G fill:#e8f5e8
+```
+
 **Key Python Files:**
 
 - `main1.py` — Main pipeline for indicator evaluation, feature selection, and model training/testing.
@@ -99,16 +133,77 @@
 
 ---
 
-## Next Steps: Pair Trading & Generalization
+## Future Development Roadmap
 
-- **Pair Trading:**
-  - Implement pair trading strategies (long one asset, short another) based on spread or mean-reversion signals.
-- **Cointegration Analysis:**
-  - Generalize pair trading by identifying cointegrated pairs using statistical tests.
-  - Build models and strategies that exploit cointegration relationships for robust mean-reversion trades.
+### Phase 1: Advanced Portfolio Management
+- **Multi-Asset Portfolio Optimization**
+  - Implement Markowitz portfolio theory for optimal asset allocation
+  - Risk parity strategies for balanced risk exposure
+  - Dynamic rebalancing based on market conditions
+  - Correlation-based position sizing across assets
+
+- **Kelly Criterion Implementation**
+  - Kelly's formula for optimal position sizing: f* = (bp - q) / b
+  - Dynamic Kelly based on rolling win rates and odds
+  - Fractional Kelly for risk management
+  - Kelly-based portfolio allocation across multiple strategies
+
+### Phase 2: Advanced Trading Strategies
+- **Pair Trading & Mean Reversion**
+  - Cointegration analysis for pair selection
+  - Statistical arbitrage strategies
+  - Mean reversion with volatility scaling
+  - Spread-based position sizing
+
+- **Momentum & Trend Following**
+  - Multi-timeframe momentum strategies
+  - Trend strength indicators
+  - Breakout detection algorithms
+  - Volatility-adjusted momentum signals
+
+### Phase 3: Machine Learning Enhancements
+- **Deep Learning Models**
+  - LSTM/GRU for sequence modeling
+  - Transformer architectures for market prediction
+  - Attention mechanisms for feature importance
+  - Ensemble of neural networks
+
+- **Reinforcement Learning**
+  - Q-learning for optimal trading actions
+  - Policy gradient methods for strategy optimization
+  - Multi-agent systems for portfolio management
+  - Risk-aware RL algorithms
+
+### Phase 4: Risk Management & Analytics
+- **Advanced Risk Metrics**
+  - Value at Risk (VaR) and Conditional VaR
+  - Maximum drawdown analysis
+  - Stress testing and scenario analysis
+  - Real-time risk monitoring
+
+- **Market Regime Detection**
+  - Hidden Markov Models for regime identification
+  - Regime-dependent strategy selection
+  - Adaptive parameter tuning
+  - Regime transition probabilities
+
+### Phase 5: Production & Deployment
+- **Real-time Trading System**
+  - Low-latency execution engine
+  - Real-time data feeds and processing
+  - Automated order management
+  - Performance monitoring dashboard
+
+- **Backtesting Framework**
+  - Event-driven backtesting engine
+  - Transaction cost modeling
+  - Slippage and market impact simulation
+  - Realistic execution modeling
 
 ---
 
 ## Summary
 
-This project provides a robust, modular pipeline for indicator evaluation, model building, and trading simulation across multiple strategies and model types. The system is designed for extensibility and rigorous out-of-sample testing, with a focus on both predictive power and practical trading performance. 
+This project provides a robust, modular pipeline for indicator evaluation, model building, and trading simulation across multiple strategies and model types. The system is designed for extensibility and rigorous out-of-sample testing, with a focus on both predictive power and practical trading performance.
+
+The future roadmap includes advanced portfolio management techniques like Kelly's criterion and multi-asset optimization, along with sophisticated machine learning approaches and comprehensive risk management systems. 
