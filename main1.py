@@ -116,7 +116,23 @@ for symbol in symbols:
                 spearman_corr = spearmanr(signal[valid], y_reg_valid)[0] if len(signal[valid]) > 1 else np.nan
                 ic = calculate_ic(pd.DataFrame({'position': signal[valid], 'bam_close': test_df['bam_close'][valid]}), signal_col='position', price_col='bam_close')
                 win_rate = calulate_win(pd.DataFrame({'position': signal[valid], 'bam_close': test_df['bam_close'][valid]}), signal_col='position', price_col='bam_close')
+
                 sharpe = calculate_sharpe(pd.DataFrame({'position': signal[valid], 'bam_close': test_df['bam_close'][valid]}), price_col='bam_close', position_col='position')
+
+                # Weighted win rate calculation
+                rise_mask = y_bin_valid == 1
+                fall_mask = y_bin_valid == 0
+                n_rise = rise_mask.sum()
+                n_fall = fall_mask.sum()
+                win_rise = ((signal[valid][rise_mask] > 0) & (y_reg_valid[rise_mask] > 0)).sum()
+                win_rate_rise = win_rise / n_rise if n_rise > 0 else np.nan
+                win_fall = ((signal[valid][fall_mask] < 0) & (y_reg_valid[fall_mask] < 0)).sum()
+                win_rate_fall = win_fall / n_fall if n_fall > 0 else np.nan
+                if n_rise + n_fall > 0:
+                    weighted_win = (n_rise * win_rate_rise + n_fall * win_rate_fall) / (n_rise + n_fall)
+                else:
+                    weighted_win = np.nan
+
                 results.append({
                     'window': trading_window,
                     'indicator': indicator_name,
@@ -126,9 +142,10 @@ for symbol in symbols:
                     'spearman': spearman_corr,
                     'ic': ic,
                     'win': win_rate,
+                    'weighted_win': weighted_win,
                     'sharpe': sharpe
                 })
-                print(f"Window: {trading_window}h | Acc: {acc:.3f} | R2: {r2:.3f} | Pearson: {pearson_corr:.3f} | Spearman: {spearman_corr:.3f} | IC: {ic:.3f} | Win: {win_rate:.3f} | Sharpe: {sharpe:.3f}")
+                print(f"Window: {trading_window}h | Acc: {acc:.3f} | R2: {r2:.3f} | Pearson: {pearson_corr:.3f} | Spearman: {spearman_corr:.3f} | IC: {ic:.3f} | Win: {win_rate:.3f} | Weighted Win: {weighted_win:.3f} | Sharpe: {sharpe:.3f}")
             except Exception as e:
                 print(f"Window: {trading_window}h | Error: {e}")
     # Export results as CSV

@@ -9,8 +9,8 @@ import importlib
 from sklearn.linear_model import LogisticRegression, LinearRegression
 from sklearn.metrics import accuracy_score, r2_score
 from scipy.stats import spearmanr, pearsonr
-from regression import run_indicators
-from trading import simulate_trading, simulate_trading_ensemble
+from regression import run_indicators, tcv_quantile
+from trading import simulate_trading, simulate_trading_ensemble, simulate_trading_quantile
 from datetime import datetime
 
 original_columns=['bam_vwa', 'bam_open', 'bam_close',
@@ -50,7 +50,7 @@ for symbol in symbols:
                 print(f"Shape: {df1.shape}")
             
             # Run regression and trading
-            linear, binary = run_indicators(df1, selected_indicators.tolist() + original_columns, time_window=trading_window)
+            linear, binary, quantile = run_indicators(df1, selected_indicators.tolist() + original_columns, time_window=trading_window)
             
             if linear is not None:
                 print("reactive")
@@ -70,8 +70,28 @@ for symbol in symbols:
                 print("ensemble")
                 simulate_trading_ensemble(df1[:1000], linear, binary, selected_indicators.tolist() + original_columns, 
                                        trading_window=trading_window, plot=True, strategy='reactive')
+                print("ensemble simple")
+                simulate_trading_ensemble(df1[:1000], linear, binary, selected_indicators.tolist() + original_columns, 
+                                       trading_window=trading_window, plot=True, strategy='simple')
             else:
                 print("Failed to create linear model")
+            # Quantile regression strategy (always run if quantile_model is not None)
+            if quantile is not None:
+                print("quantile regression (median, q=0.5)")
+                simulate_trading_quantile(df1[:1000], quantile, selected_indicators.tolist() + original_columns, 
+                                         trading_window=trading_window, plot=True, strategy='reactive')
+                print("quantile regression simple")
+                simulate_trading_quantile(df1[:1000], quantile, selected_indicators.tolist() + original_columns, 
+                                         trading_window=trading_window, plot=True, strategy='simple')
+                print("quantile regression quartile")
+                simulate_trading_quantile(df1[:1000], quantile, selected_indicators.tolist() + original_columns, 
+                                         trading_window=trading_window, plot=True, strategy='quartile')
+            # Binary-only trading strategy
+            if binary is not None:
+                print("binary only")
+                from trading import simulate_trading_binary
+                simulate_trading_binary(df1[:1000], binary, selected_indicators.tolist() + original_columns, 
+                                       trading_window=trading_window, plot=True)
                 
         except Exception as e:
             print(f"Error processing {symbol} - {trading_window}h: {str(e)}")
