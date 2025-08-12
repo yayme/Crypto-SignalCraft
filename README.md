@@ -86,4 +86,6 @@ The pipeline provides a structured approach to:
 - **~53% hit rate** across coins using the **Linear + Binary Ensemble** model  
 - **Consistently outperformed buy-and-hold** baselines in final testing  
 - **Sharpe ratio > 1** in most test periods, with lower drawdowns  
+## Quick look
+-- Check jupyter/example_testing.ipynb or slides
 
